@@ -3,8 +3,8 @@ var taskIdCounter = 0;
 var formEl = document.querySelector("#task-form");
 var taskToDoEl = document.querySelector("#tasks-to-do");
 var pageContentEl = document.querySelector("#page-content");
-var taskInProgressEl = document.querySelectort("#tasks-in-progress");
-var taskCompletedel = document.querySelector("task-completed");
+var taskInProgressEl = document.querySelector("#tasks-in-progress");
+var taskCompletedEl = document.querySelector("#tasks-completed");
 
 
 var taskFormHandler = function( event){
@@ -43,8 +43,7 @@ var taskFormHandler = function( event){
         };
         createTaskEl(taskDataObj); //This way createEl will only get called if isEdit is false
     }  
-    
-    
+       
 }
 
 var completeEditTask = function(taskName, taskType, taskId) {
@@ -121,7 +120,7 @@ var createTaskActions = function (taskId) {
 
     var statusChoices = ["To Do", "In Progress", "Completed"];
         for(var i =0 ; i < statusChoices.length; i++) {
-            //create optionelement
+            //create option element
             var statusOptionEl = document.createElement("option");
             statusOptionEl.textContent = statusChoices[i];
             statusOptionEl.setAttribute("value", statusChoices[i]);
@@ -173,5 +172,24 @@ var editTask = function(taskId) {
     formEl.setAttribute("data-task-id", taskId);
 }
 
+var taskStatusChangeHandler =function(event) {
+    //get taskId of the target 
+    var taskId = event.target.getAttribute("data-task-id");
+
+    //get the currently selected option's value and convert to lowercase
+    var statusValue = event.target.value.toLowerCase();
+
+    var taskSelected = document.querySelector(".task-item[data-task-id='"+ taskId + "']");
+
+    if(statusValue === "to do"){
+        tasksToDoEl.appendChild(taskSelected);
+    }else if (statusValue == "in progress") {
+        taskInProgressEl.appendChild(taskSelected);
+    }else if (statusValue === "completed") {
+        taskCompletedEl.appendChild(taskSelected);
+    }
+}
+
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
+pageContentEl.addEventListener("change", taskStatusChangeHandler);
