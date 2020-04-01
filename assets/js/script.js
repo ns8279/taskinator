@@ -3,7 +3,8 @@ var taskIdCounter = 0;
 var formEl = document.querySelector("#task-form");
 var taskToDoEl = document.querySelector("#tasks-to-do");
 var pageContentEl = document.querySelector("#page-content");
-
+var taskInProgressEl = document.querySelectort("#tasks-in-progress");
+var taskCompletedel = document.querySelector("task-completed");
 
 
 var taskFormHandler = function( event){
@@ -27,9 +28,37 @@ var taskFormHandler = function( event){
         type: taskTypeInput
     };
 
-    //send it as an argument to the createTaskEl function
-    createTaskEl(taskFormData);
+    var isEdit = formEl.hasAttribute("data-task-id");
+
+    //has data attribute, so get task id and call function to complete edit process
+    if (isEdit) {
+        var taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    }
+    //no dara attribute, so create new object as normal
+    else {
+        var taskDataObj = {
+            name: taskNameInput,
+            type: taskTypeInput
+        };
+        createTaskEl(taskDataObj); //This way createEl will only get called if isEdit is false
+    }  
     
+    
+}
+
+var completeEditTask = function(taskName, taskType, taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='"+ taskId + "']");
+    
+    //set new values
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    window.alert("Task updated!");
+
+    //set formEl task id to stop
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
 }
 
 var createTaskEl = function(taskDataObj) {
